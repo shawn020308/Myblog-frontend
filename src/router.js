@@ -1,12 +1,10 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Index from './views/Index.vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import Index from './views/Index.vue'; // 确保路径正确
+import Register from './views/Register.vue';
 
-Vue.use(Router);
 
-export default new Router({
-    mode: 'history',
-    base: process.env.BASE_URL,
+const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL), // 使用 Vite 的环境变量
     routes: [
         {
             path: '/',
@@ -16,6 +14,13 @@ export default new Router({
             path: '/index',
             name: 'index',
             component: Index,
+        },
+        {
+            path: '/register',
+            name: '/register',
+            component: Register,
         }
     ]
-})
+});
+
+export default router;

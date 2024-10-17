@@ -9,4 +9,10 @@ export default {
   name: 'Index',
   components: {},
 }
-</script>/
+</script>
+
+<style scoped>
+.index {
+  /* 这里可以加一些样式 */
+}
+</style>
