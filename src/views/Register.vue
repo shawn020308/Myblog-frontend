@@ -1,10 +1,11 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import axios from '../http.js' // 确保路径正确
+import { useRouter } from 'vue-router'
 
-// 自定义验证函数，确保两次输入的密码一致
 const validatePasswordConfirm = (rule, value, callback) => {
-  if (value !== form.password) {
+  if (value !== form.user_password) {
     callback(new Error('两次输入的密码不一致'))
   } else {
     callback()
@@ -12,60 +13,78 @@ const validatePasswordConfirm = (rule, value, callback) => {
 }
 
 const form = reactive({
-  name: '',
-  email: '',
-  password: '',
-  passwordConfirm: ''
+  user_name: '',
+  user_email: '',
+  user_password: '',
+  user_identity: '',
+  passwordConfirm: ''  // 添加 passwordConfirm 字段
 })
 
 const rules = reactive({
-  name: [
+  user_name: [
     { required: true, message: '需要用户名', trigger: 'blur' },
     { min: 3, max: 10, message: '用户名必须在3到10个字符之间', trigger: 'blur' }
   ],
-  email: [
+  user_email: [
     { required: true, message: '需要一个邮件地址', trigger: 'blur' },
     { type: 'email', message: '请输入有效的邮件地址', trigger: ['blur', 'change'] }
   ],
-  password: [
+  user_password: [
     { required: true, message: '需要一个密码', trigger: 'blur' },
     { min: 6, message: '密码至少为6个字符', trigger: 'blur' }
   ],
   passwordConfirm: [
     { required: true, message: '请确认密码', trigger: 'blur' },
-    { min: 6, message: '密码至少为6个字符', trigger: 'blur' },
-    { validator: validatePasswordConfirm, trigger: 'blur' }
+    { validator: validatePasswordConfirm, trigger: 'blur' } // 添加 validator
   ]
 })
 
 const registerForm = ref(null)
+const router = useRouter()
 
 const onSubmit = () => {
   registerForm.value.validate((valid) => {
     if (valid) {
-      ElMessage.success('表单验证通过！')
-      console.log('提交表单:', form)
+      // 输出表单数据
+      console.log('提交表单数据:', form);
+
+      // 更新为后端实际的注册接口
+      axios.registerUser('/api/users/register', form,{
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+          .then(res => {
+            ElMessage.success('注册成功！')
+            console.log('响应数据:', res.data); // 可以输出响应数据
+            router.push({ name: 'login' })  // 调整跳转路由的名称
+          })
+          .catch(err => {
+            // 可以在此处显示更友好的错误消息
+            ElMessage.error('注册失败，请重试')
+            console.error('注册错误:', err)
+          })
     } else {
       ElMessage.error('请填写完整并修正表单中的错误')
       return false
     }
   })
 }
-</script>
 
+</script>
 
 <template>
   <div class="register">
     <h1 class="register-title">博客后台管理系统</h1>
     <el-form :model="form" :rules="rules" label-width="auto" ref="registerForm">
-      <el-form-item label="用户名" prop="name">
-        <el-input v-model="form.name" placeholder="请输入用户名" />
+      <el-form-item label="用户名" prop="user_name">
+        <el-input v-model="form.user_name" placeholder="请输入用户名"/>
       </el-form-item>
-      <el-form-item label="邮件地址" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮件地址"/>
+      <el-form-item label="邮件地址" prop="user_email">
+        <el-input v-model="form.user_email" placeholder="请输入邮件地址"/>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" placeholder="请输入密码"/>
+      <el-form-item label="密码" prop="user_password">
+        <el-input v-model="form.user_password" type="password" placeholder="请输入密码"/>
       </el-form-item>
       <el-form-item label="确认密码" prop="passwordConfirm">
         <el-input v-model="form.passwordConfirm" type="password" placeholder="请确认密码"/>
@@ -92,6 +111,7 @@ const onSubmit = () => {
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 20px;
+  box-shadow: 0 0 26px 2px #eee;
 }
 
 .register-title {
@@ -113,11 +133,3 @@ const onSubmit = () => {
   }
 }
 </style>
-
-
-
-<script>
-export default {
-  name: 'register',
-}
-</script>

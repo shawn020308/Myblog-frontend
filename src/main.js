@@ -13,7 +13,10 @@ const app = createApp(App)
 
 // 使用 ElementPlus 插件
 app.use(ElementPlus)
-Vue.prototype.$axios = axios;
+
+// axios 设置
+app.config.globalProperties.$axios = axios
+
 
 // 使用路由和状态管理
 app.use(router)
