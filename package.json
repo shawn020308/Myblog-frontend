@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.7",
     "Babel": "^0.0.1",
     "element-plus": "^2.8.5",
     "Router": "^2.1.0",
