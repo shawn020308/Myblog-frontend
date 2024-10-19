@@ -19,7 +19,6 @@ const form = reactive({
   user_identity: '',
   passwordConfirm: ''  // 添加 passwordConfirm 字段
 })
-
 const rules = reactive({
   user_name: [
     { required: true, message: '需要用户名', trigger: 'blur' },
@@ -48,28 +47,24 @@ const onSubmit = () => {
       // 输出表单数据
       console.log('提交表单数据:', form);
 
-      // 更新为后端实际的注册接口
-      axios.registerUser('/api/users/register', form,{
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      axios.registerUser(form) // 只传递form
           .then(res => {
-            ElMessage.success('注册成功！')
-            console.log('响应数据:', res.data); // 可以输出响应数据
-            router.push({ name: 'login' })  // 调整跳转路由的名称
+            ElMessage.success('注册成功！');
+            console.log('响应数据:', res.data);
+            // router.push({ name: 'login' });
           })
           .catch(err => {
-            // 可以在此处显示更友好的错误消息
-            ElMessage.error('注册失败，请重试')
-            console.error('注册错误:', err)
-          })
+            const errorMessage = err.response?.data?.msg || '注册失败，请重试'; // 如果后端返回了msg，就使用它
+            ElMessage.error(errorMessage);
+            console.error('注册错误:', err);
+          });
     } else {
-      ElMessage.error('请填写完整并修正表单中的错误')
-      return false
+      ElMessage.error('请填写完整并修正表单中的错误');
+      return false;
     }
-  })
+  });
 }
+
 
 </script>
 
