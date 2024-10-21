@@ -58,7 +58,7 @@ axios.interceptors.response.use(
 // 创建注册用户的请求
 const registerUser = async (userData) => {
     try {
-        console.log('Sending data:', userData); // 输出即将发送的数据
+        console.log('发送的数据:', userData); // 输出即将发送的数据
         const response = await axios.post('http://localhost:3001/api/users/register', qs.stringify(userData), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded' // 设置请求头
@@ -70,7 +70,28 @@ const registerUser = async (userData) => {
         throw error; // 继续抛出错误
     }
 };
+
+// 创建登录请求
+const loginUser = async (userData) => {
+    try {
+        console.log('发送的数据:', userData);
+        const response = await axios.post('http://localhost:3001/api/users/login', qs.stringify(userData), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('登录失败:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+
+
 export default {
     registerUser,
+    loginUser,
     axios,
 };

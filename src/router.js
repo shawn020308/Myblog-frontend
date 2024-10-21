@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Index from './views/Index.vue'; // 确保路径正确
 import Register from './views/Register.vue';
+import Login from './views/Login.vue';
 import NotFoundPage from './views/404.vue';
 
 const router = createRouter({
@@ -19,6 +20,11 @@ const router = createRouter({
             path: '/register',
             name: '/register',
             component: Register,
+        },
+        {
+            path: '/login',
+            name: '/login',
+            component: Login,
         },
         {
             path: '/:catchAll(.*)',
